@@ -1,0 +1,7 @@
+{
+  "photonUrl": "https://photon.komoot.io/api/",
+  "overpassUrl": "https://overpass-api.de/api/interpreter",
+  "maptilerKey": "",
+  "supabaseUrl": "",
+  "supabaseKey": ""
+}

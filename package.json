@@ -1,0 +1,17 @@
+{
+  "name": "elsewhere-world-explorer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "three": "^0.180.0",
+    "lucide": "^0.468.0",
+    "@supabase/supabase-js": "^2.57.0"
+  },
+  "devDependencies": {"esbuild": "^0.25.0", "@playwright/test": "^1.55.0"}
+}

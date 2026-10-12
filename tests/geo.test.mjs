@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { project, unproject, parseCoordinates, buildingHeight, pointInPolygon, overpassQuery } from '../src/geo.js';
+test('geographic projection round-trips a real address',()=>{const origin={lat:40.7112,lon:-74.0085};const [x,z]=project(40.7127,-74.0134,origin);const restored=unproject(x,z,origin);assert.ok(Math.abs(restored.lat-40.7127)<1e-8);assert.ok(Math.abs(restored.lon+74.0134)<1e-8);assert.ok(x<0&&z<0);});
+test('coordinate search accepts valid world positions and rejects invalid input',()=>{assert.equal(parseCoordinates('35.6595, 139.7005').lat,35.6595);assert.equal(parseCoordinates('91, 2'),null);assert.equal(parseCoordinates('2, -181'),null);assert.equal(parseCoordinates('Paris'),null);assert.equal(parseCoordinates('0, 0').lon,0);});
+test('building heights prefer measurements and handle feet and missing data',()=>{assert.equal(buildingHeight({height:'100','building:levels':'2'}),100);assert.equal(buildingHeight({height:'100 ft'}),30.48);assert.equal(buildingHeight({'building:levels':'5'}),17);assert.equal(buildingHeight({height:'unknown',building:'house'}),8);assert.equal(buildingHeight({height:'999999'}),700);});
+test('collisions distinguish building interiors and open streets',()=>{const footprint=[[0,0],[10,0],[10,10],[0,10]];assert.equal(pointInPolygon(5,5,footprint),true);assert.equal(pointInPolygon(11,5,footprint),false);assert.equal(pointInPolygon(-1,-1,footprint),false);});
+test('map requests are geographically bounded',()=>{const query=overpassQuery({lat:40,lon:-74,radius:900});assert.match(query,/\[timeout:35\]/);assert.match(query,/way\[building\]/);assert.match(query,/out tags geom/);assert.ok(!query.includes('NaN'));});
