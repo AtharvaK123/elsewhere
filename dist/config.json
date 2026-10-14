@@ -1,7 +1,6 @@
 {
   "photonUrl": "https://photon.komoot.io/api/",
-  "overpassUrl": "https://overpass-api.de/api/interpreter",
-  "maptilerKey": "",
-  "supabaseUrl": "",
-  "supabaseKey": ""
+  "openFreeMapUrl": "https://tiles.openfreemap.org/planet",
+  "supabaseUrl": "https://oxkecdcvidhtuhgskfat.supabase.co",
+  "supabaseKey": "sb_publishable_9da5wl3DnsPkITGj9nn87A_50x1wK1K"
 }

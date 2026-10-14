@@ -8,10 +8,12 @@ export const DESTINATIONS = [
 ];
 
 export function project(lat, lon, origin) {
-  return [(lon - origin.lon) * 111320 * Math.cos(origin.lat * Math.PI / 180), -(lat - origin.lat) * 110540];
+  const longitudeDelta = ((lon - origin.lon + 540) % 360) - 180;
+  return [longitudeDelta * 111320 * Math.cos(origin.lat * Math.PI / 180), -(lat - origin.lat) * 110540];
 }
 export function unproject(x, z, origin) {
-  return { lat: origin.lat - z / 110540, lon: origin.lon + x / (111320 * Math.cos(origin.lat * Math.PI / 180)) };
+  const lon = origin.lon + x / (111320 * Math.cos(origin.lat * Math.PI / 180));
+  return { lat: origin.lat - z / 110540, lon: ((lon + 540) % 360) - 180 };
 }
 export function parseCoordinates(query) {
   const match = query.trim().match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
@@ -22,9 +24,9 @@ export function parseCoordinates(query) {
 }
 export function buildingHeight(tags = {}) {
   const height = parseFloat(tags.height);
-  if (Number.isFinite(height) && height > 0) return Math.min(700, tags.height.includes('ft') ? height * .3048 : height);
+  if (Number.isFinite(height) && height > 0) return Math.min(10000, /(?:ft|feet|')/i.test(String(tags.height)) ? height * .3048 : height);
   const levels = parseFloat(tags['building:levels']);
-  if (Number.isFinite(levels) && levels > 0) return Math.min(650, levels * 3.4);
+  if (Number.isFinite(levels) && levels > 0) return Math.min(10000, levels * 3.4);
   return ({ house: 8, residential: 14, apartments: 20, commercial: 24, church: 24, garage: 4, industrial: 9 })[tags.building] || 15;
 }
 export function overpassQuery(place) {

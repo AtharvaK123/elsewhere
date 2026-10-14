@@ -1,57 +1,64 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f6f7f3"><meta name="description" content="The world is your playground. Step into real places, find a new perspective, and explore together in Elsewhere.">
-  <title>Elsewhere — The world is your playground</title>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#192c31"><meta name="description" content="Elsewhere. A real world to get lost in. Jump anywhere and explore together in 3D.">
+  <title>Elsewhere - A world to get lost in</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='20' fill='%23232f28'/%3E%3Cpath d='M16 36a16 16 0 0 1 32 0M21 36a11 11 0 0 1 22 0M26 36a6 6 0 0 1 12 0' fill='none' stroke='%23d0ff71' stroke-width='4'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Manrope:wght@400;500;600;650;700;750;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <aside class="rail" aria-label="Main navigation">
-    <a class="brand-mark" href="#" aria-label="Elsewhere home"><svg viewBox="0 0 40 40" fill="none"><path d="M5 25a15 15 0 0 1 30 0M11 25a9 9 0 0 1 18 0M17 25a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg></a>
-    <div class="rail-links">
-      <button class="rail-button active" data-view="explore" aria-label="Explore" title="Explore"><i data-lucide="compass"></i></button>
-      <button class="rail-button" data-view="discover" aria-label="Discover destinations" title="Discover"><i data-lucide="globe-2"></i></button>
-      <button class="rail-button" data-view="saved" aria-label="Saved places" title="Saved places"><i data-lucide="bookmark"></i><span class="rail-dot" id="saved-dot" hidden></span></button>
-      <button class="rail-button" id="party-nav" aria-label="Your party" title="Your party"><i data-lucide="users-round"></i></button>
+  <main id="world-section">
+    <div class="world" id="world" tabindex="0" aria-label="3D world. Click for mouse look. Use W A S D to walk, Shift to run, Space to jump, double Space or F to fly, V for third person.">
+      <div id="scene"></div><div class="world-vignette"></div><div id="scene-labels" aria-hidden="true"></div>
+      <header class="game-header hud">
+        <div class="identity"><a class="brand-mark" href="#" aria-label="Elsewhere home"><svg viewBox="0 0 40 40" fill="none"><path d="M5 25a15 15 0 0 1 30 0M11 25a9 9 0 0 1 18 0M17 25a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></a><a class="wordmark" href="#">elsewhere<span>A WORLD TO GET LOST IN</span></a></div>
+        <div class="session glass"><span class="live-dot"></span><span id="connection-status">Solo session</span><button id="invite-button" aria-label="Invite friends" title="Invite friends"><i data-lucide="user-round-plus"></i><span>Invite</span></button></div>
+      </header>
+      <div class="location-hud hud"><div class="location-chip glass"><i data-lucide="map-pin"></i><div><strong id="location-name">Lower Manhattan</strong><span id="location-region">New York, United States</span></div><button class="icon-button" id="save-place" aria-label="Save this place" title="Save place"><i data-lucide="bookmark"></i></button></div><button class="data-chip" id="data-chip" aria-label="Refresh live map" title="Refresh OpenFreeMap data"><span class="live-dot"></span><span id="data-status">Starting your world</span><i data-lucide="refresh-cw"></i></button></div>
+      <div class="compass hud" aria-label="Compass"><span>W</span><span class="compass-tick"></span><span>NW</span><strong id="heading">N</strong><span>NE</span><span class="compass-tick"></span><span>E</span><i></i></div>
+      <div class="world-tools glass hud" aria-label="World controls"><button id="perspective-button" aria-label="Switch to third person" title="Third person (V)"><i data-lucide="users-round"></i></button><button id="day-button" aria-label="Switch to night" title="Day / night"><i data-lucide="sun"></i></button><button id="sound-button" aria-label="Enable ambient sound" title="Ambient sound"><i data-lucide="volume-x"></i></button><button id="fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen"><i data-lucide="maximize"></i></button><span class="tool-divider"></span><button id="help-button" aria-label="How to play" title="Controls"><i data-lucide="circle-help"></i></button></div>
+      <div class="crosshair" aria-hidden="true"></div>
+      <div class="world-coordinate hud"><span id="street-name" hidden></span><span id="coordinates">40.7112 N / 74.0085 W</span><span id="elevation">FIRST PERSON</span><span id="stream-status" hidden>Loading nearby streets</span></div>
+      <div class="player-hud glass hud"><button class="player-avatar" id="profile-button" aria-label="Customize your explorer" title="Customize your explorer">J<span></span></button><div class="player-details"><strong id="player-label">Just exploring</strong><span><span class="live-dot"></span>Free roam <span class="tiny-divider">/</span> <span id="player-mode">Solo</span><span class="tiny-divider">/</span><span id="nearby-count">0 nearby</span></span></div></div>
+      <div class="camera-hud hud"><div class="map-controls glass"><button id="zoom-in" aria-label="Zoom in"><i data-lucide="plus"></i></button><button id="zoom-out" aria-label="Zoom out"><i data-lucide="minus"></i></button><button class="compass-button" id="reset-view" aria-label="Reset camera north" title="Reset camera"><i data-lucide="navigation"></i></button></div><button class="play-button glass" id="explore-button"><i data-lucide="footprints"></i><span>Walk</span><kbd>F</kbd></button></div>
+      <div class="dock-wrap hud"><div class="control-hint"><span id="movement-hint">DRAG TO ORBIT &nbsp; / &nbsp; SCROLL TO ZOOM</span><button id="controls-button" aria-label="View keyboard controls"><i data-lucide="keyboard"></i></button></div><nav class="game-dock glass" aria-label="Game menu"><button class="dock-tab active" data-view="explore" id="world-tab" aria-label="Play" title="Return to world"><i data-lucide="compass"></i><span>Play</span></button><button class="dock-tab" data-view="discover" aria-label="Travel" aria-controls="travel-panel" aria-expanded="false"><i data-lucide="globe-2"></i><span>Travel</span></button><button class="dock-tab" data-view="saved" aria-label="Saved places" aria-controls="travel-panel" aria-expanded="false"><i data-lucide="bookmark"></i><span>Saved</span><span class="rail-dot" id="saved-dot" hidden></span></button><span class="dock-divider"></span><button class="dock-tab" id="party-nav" aria-label="Your party"><i data-lucide="users-round"></i><span>Party</span></button><button class="dock-tab" id="settings-button" aria-label="Settings and connections"><i data-lucide="sliders-horizontal"></i><span>Settings</span></button></nav></div>
+      <section class="travel-panel glass hud" id="travel-panel" aria-label="Travel menu" hidden>
+        <div class="panel-heading"><div><span class="eyebrow">THE WORLD IS OPEN</span><h1 id="panel-title">Where to?</h1></div><button id="close-travel-panel" class="icon-button" aria-label="Close travel menu"><i data-lucide="x"></i></button></div>
+        <section class="search-panel" aria-label="Find a destination"><form id="search-form" autocomplete="off"><div class="search-row"><i data-lucide="search"></i><label class="sr-only" for="destination">Destination</label><input id="destination" placeholder="City, address, or coordinates" maxlength="200"><button type="submit" id="go-button" aria-label="Find destination"><i data-lucide="arrow-up-right"></i></button></div><div class="travel-style"><span><i data-lucide="orbit"></i>Arrive in style</span><label class="sr-only" for="travel-mode">Travel transition</label><select id="travel-mode"><option value="portal">Portal jump</option><option value="warp">Warp speed</option><option value="cloud">Cloud dive</option></select></div></form><div class="search-results" id="search-results" hidden></div></section>
+        <section class="discover-section" id="discover-section"><div class="discover-heading"><h2 id="destinations-heading">Pick a portal</h2><button class="text-button" id="surprise-button"><i data-lucide="shuffle"></i>Surprise me</button></div><div class="destination-grid" id="destination-grid"></div><div class="empty-state" id="empty-saved" hidden><i data-lucide="bookmark"></i><h3>Keep a little of the world.</h3><p>Bookmark any place to find it here.</p></div><button class="text-button full-width" id="view-destinations">More destinations<i data-lucide="arrow-right"></i></button></section>
+      </section>
+      <div class="mobile-movement hud" id="mobile-movement" hidden><button data-move="w" aria-label="Move forward">&uarr;</button><div><button data-move="a" aria-label="Move left">&larr;</button><button data-move="s" aria-label="Move back">&darr;</button><button data-move="d" aria-label="Move right">&rarr;</button></div><div class="mobile-vertical"><button data-move=" " aria-label="Jump, or fly up">&#x2912;</button><button data-move="c" aria-label="Fly down">&#x2913;</button></div></div>
+      <div class="attribution"><a id="openfreemap-credit" href="https://openfreemap.org/" target="_blank" rel="noreferrer">OpenFreeMap</a><a id="openmaptiles-credit" href="https://www.openmaptiles.org/" target="_blank" rel="noreferrer">&copy; OpenMapTiles</a><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">&copy; OpenStreetMap</a><a id="footprints-credit" href="https://gis-fema.hub.arcgis.com/pages/usa-structures" target="_blank" rel="noreferrer" title="Fill-in building footprints: Oak Ridge National Laboratory; FEMA Geospatial Response Office (CC BY 4.0)" hidden>ORNL/FEMA footprints</a></div>
+      <div class="travel-overlay" id="travel-overlay" hidden><div class="portal-rings"><span></span><span></span><span></span></div><div class="travel-copy"><span class="eyebrow" id="travel-eyebrow">OPENING A PORTAL</span><h2 id="travel-title">Somewhere new awaits.</h2><p id="travel-detail">Loading your destination</p><div class="travel-progress" aria-hidden="true"><span id="travel-bar"></span></div><button class="button" id="cancel-travel">Cancel trip</button></div></div>
+      <div class="scene-error" id="scene-error" role="alert" hidden><i data-lucide="globe-2"></i><h3>Let's get you back into the world.</h3><p id="scene-error-text">Check your connection and try again.</p><button class="button primary" id="retry-scene">Try again</button></div>
+      <div class="scene-loading" id="scene-loading" role="status"><div class="loading-emblem"><span></span><span></span><span></span></div><strong>elsewhere</strong><span id="loading-detail">Starting your world...</span><small>Your next adventure is a moment away.</small></div>
     </div>
-    <div class="rail-bottom"><button class="rail-button" id="help-button" aria-label="How to play" title="How to play"><i data-lucide="circle-help"></i></button><button class="rail-button" id="settings-button" aria-label="Settings and connections" title="Settings"><i data-lucide="sliders-horizontal"></i></button><button class="profile" id="profile-button" aria-label="Edit explorer profile">J</button></div>
-  </aside>
-  <div class="app-shell">
-    <header class="topbar"><a class="wordmark" href="#">elsewhere<span class="beta">BETA</span></a><div class="header-center"><span class="live-dot"></span>The world is your playground.</div><div class="header-right"><span class="solo-indicator" id="connection-status">Solo session</span><button class="button invite-button" id="invite-button"><i data-lucide="user-round-plus"></i>Invite friends</button></div></header>
-    <main>
-      <section class="intro"><div><div class="eyebrow">A BIG WORLD. ENDLESS POSSIBILITIES.</div><h1>Where to next<span>?</span></h1><p>A familiar street. A faraway city. Somewhere completely new.</p></div><div class="explorer-badge"><span class="badge-orbit"><i data-lucide="sparkles"></i></span><div><strong>Stay curious.</strong><span>Your next adventure is one jump away.</span></div></div></section>
-      <section class="search-panel" aria-label="Find a destination">
-        <form id="search-form" autocomplete="off"><i data-lucide="search" class="search-icon"></i><label class="sr-only" for="destination">Destination</label><input id="destination" placeholder="Where do you want to go? City, landmark, or address…" maxlength="200"><span class="search-key">↵</span><div class="travel-select-wrap"><i data-lucide="orbit" id="mode-icon"></i><label class="sr-only" for="travel-mode">Travel transition</label><select id="travel-mode"><option value="portal">Portal jump</option><option value="warp">Warp speed</option><option value="cloud">Cloud dive</option></select></div><button class="button primary" type="submit" id="go-button">Let’s go<i data-lucide="arrow-up-right"></i></button></form>
-        <div class="search-results" id="search-results" hidden></div>
-      </section>
-      <section class="world-section" id="world-section">
-        <div class="section-bar"><div class="section-tabs"><button class="section-tab active" id="world-tab"><span class="live-dot"></span>Your world</button><span class="section-divider"></span><span class="world-subtitle">Go on, take a look around.</span></div><button class="text-button" id="surprise-button"><i data-lucide="shuffle"></i>Surprise me</button></div>
-        <div class="world" id="world" tabindex="0" aria-label="Interactive 3D world. Drag to orbit, scroll to zoom. Press Explore on foot to move using W A S D.">
-          <div id="scene"></div><div class="world-vignette"></div>
-          <div class="world-top-left"><div class="location-chip"><span class="location-icon"><i data-lucide="map-pin"></i></span><div><strong id="location-name">Lower Manhattan</strong><span id="location-region">New York, United States</span></div><button class="icon-button" id="save-place" aria-label="Save this place" title="Save this place"><i data-lucide="bookmark"></i></button></div><div class="data-chip" id="data-chip"><span class="live-dot"></span><span id="data-status">Building your world…</span></div></div>
-          <div class="world-top-right"><button class="world-square" id="day-button" aria-label="Switch to night" title="Change time of day"><i data-lucide="sun"></i></button><button class="world-square" id="sound-button" aria-label="Enable ambient sound" title="Ambient sound"><i data-lucide="volume-x"></i></button><button class="world-square" id="fullscreen-button" aria-label="Enter fullscreen" title="Fullscreen"><i data-lucide="maximize"></i></button></div>
-          <div id="scene-labels" aria-hidden="true"></div>
-          <div class="world-coordinate"><span id="coordinates">40.7112° N &nbsp; 74.0085° W</span><span class="coordinate-line"></span><span id="elevation">BIRD’S-EYE VIEW</span></div>
-          <div class="world-bottom-left"><div class="player-avatar">J<span></span></div><div class="player-details"><strong id="player-label">Just exploring</strong><span><span class="live-dot"></span>Free roam<span class="tiny-divider">·</span><span id="player-mode">Solo</span></span></div><button class="play-button" id="explore-button"><i data-lucide="footprints"></i><span>Explore on foot</span><i data-lucide="arrow-right"></i></button></div>
-          <div class="world-bottom-center"><span><i data-lucide="mouse"></i>Drag to look</span><span><i data-lucide="move-vertical"></i>Scroll to zoom</span><button id="controls-button" aria-label="View keyboard controls"><i data-lucide="keyboard"></i></button></div>
-          <div class="map-controls"><button class="world-square" id="zoom-in" aria-label="Zoom in"><i data-lucide="plus"></i></button><button class="world-square" id="zoom-out" aria-label="Zoom out"><i data-lucide="minus"></i></button><span></span><button class="world-square compass-button" id="reset-view" aria-label="Reset camera north" title="Reset view"><span>N</span><i data-lucide="navigation"></i></button></div>
-          <div class="attribution"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a><span>Stylized 3D · estimated heights where missing</span></div>
-          <div class="mobile-movement" id="mobile-movement" hidden><button data-move="w" aria-label="Move forward">↑</button><div><button data-move="a" aria-label="Move left">←</button><button data-move="s" aria-label="Move back">↓</button><button data-move="d" aria-label="Move right">→</button></div></div>
-          <div class="travel-overlay" id="travel-overlay" hidden><div class="portal-rings"><span></span><span></span><span></span></div><div class="travel-copy"><span class="eyebrow" id="travel-eyebrow">OPENING A PORTAL</span><h2 id="travel-title">Somewhere new awaits.</h2><p id="travel-detail">Finding your place in the world…</p><button class="button" id="cancel-travel">Cancel trip</button></div></div>
-          <div class="scene-error" id="scene-error" hidden><i data-lucide="globe-2"></i><h3>A little trouble entering this world.</h3><p id="scene-error-text">Check your connection and try again.</p><button class="button primary" id="retry-scene">Try again</button></div>
-          <div class="scene-loading" id="scene-loading"><span class="loader"></span>Finding your place in the world…</div>
-        </div>
-      </section>
-      <section class="discover-section" id="discover-section"><div class="discover-heading"><div><div class="eyebrow">FOLLOW YOUR CURIOSITY</div><h2 id="destinations-heading">A little inspiration for your next jump.</h2></div><button class="text-button" id="view-destinations">Explore destinations<i data-lucide="arrow-up-right"></i></button></div><div class="destination-grid" id="destination-grid"></div><div class="empty-state" id="empty-saved" hidden><i data-lucide="bookmark"></i><h3>A world worth coming back to.</h3><p>Save a destination with its bookmark to start your collection.</p></div></section>
-      <footer><span><span class="footer-star">✳</span> Less scrolling. More exploring.</span><span>Made for the wonderfully curious.<i data-lucide="globe-2"></i></span></footer>
-    </main>
-  </div>
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-  <dialog id="modal"><div id="modal-content"></div></dialog>
-  <script type="module" src="./app.js"></script>
+  </main>
+  <div class="toast glass" id="toast" role="status" aria-live="polite" hidden></div>
+  <dialog class="glass" id="modal"><div id="modal-content"></div></dialog>
+  <noscript><div class="scene-error">Enable JavaScript to enter this 3D world.</div></noscript>
+  <script>
+    (() => {
+      const fail = message => {
+        document.querySelector('#scene-loading').hidden = true;
+        document.querySelector('#scene-error').hidden = false;
+        document.querySelector('#scene-error-text').textContent = message;
+        document.querySelector('#retry-scene').onclick = () => location.reload();
+      };
+      if (location.protocol === 'file:') {
+        fail('Start the local game server with npm.cmd run dev in the elsewhere folder, then open http://127.0.0.1:4173. The game cannot load by opening index.html directly.');
+        return;
+      }
+      const timer = setTimeout(() => fail('The game files did not load. Run npm.cmd run build, then refresh this page.'), 15000);
+      import('./app.js').then(() => clearTimeout(timer)).catch(error => {
+        clearTimeout(timer);
+        console.error(error);
+        fail('The game could not start. Run npm.cmd run build and refresh. If this continues, try a current browser with hardware acceleration enabled.');
+      });
+    })();
+  </script>
 </body>
 </html>
